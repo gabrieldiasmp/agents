@@ -31,10 +31,10 @@ def sanitize_tokens(tokens: List[str]) -> List[str]:
 
 
 def build_prompt(tokens: List[str], label_names: List[str]) -> str:
-    joined_tokens = " ".join(tokens)
+    #joined_tokens = " ".join(tokens)
     labels_str = ", ".join(label_names)
     return (
-        f"Tokens: {joined_tokens}\n"
+        f"Tokens: {tokens}\n"
         f"Label names (index aligned): [{labels_str}]\n"
         "Return a list of integers, one per token."
     )

@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass
 from dotenv import load_dotenv
+from pathlib import Path
 load_dotenv(override=True)
 
 
@@ -15,7 +16,10 @@ class Settings:
     initial_backoff_s: float = float(os.getenv("INITIAL_BACKOFF_S", "0.5"))
     max_backoff_s: float = float(os.getenv("MAX_BACKOFF_S", "10.0"))
     request_timeout_s: float = float(os.getenv("REQUEST_TIMEOUT_S", "30"))
-    output_dir: str = os.getenv("OUTPUT_DIR", "outputs")
+    output_dir: str = os.getenv(
+        "OUTPUT_DIR",
+        str((Path(__file__).resolve().parent / "output").as_posix()),
+    )
 
 settings = Settings()
 
