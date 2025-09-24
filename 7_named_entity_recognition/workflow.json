@@ -1,0 +1,54 @@
+{
+  "name": "ner_conll2003_gemini",
+  "nodes": [
+    {
+      "id": "env",
+      "type": "env",
+      "config": {
+        "BASE_URL": "${GEMINI_BASE_URL}",
+        "API_KEY": "${GOOGLE_API_KEY}",
+        "MODEL_NAME": "${NER_MODEL_NAME}",
+        "WEBHOOK_URL": "${WEBHOOK_URL}",
+        "MAX_CONCURRENCY": "${MAX_CONCURRENCY}",
+        "MAX_RETRIES": "${MAX_RETRIES}"
+      }
+    },
+    {
+      "id": "provider",
+      "type": "model_provider",
+      "class": "GeminiModelProvider",
+      "module": "7_named_entity_recognition.model_provider",
+      "inputs": ["env"],
+      "outputs": ["provider_out"]
+    },
+    {
+      "id": "agent",
+      "type": "agent",
+      "class": "build_ner_agent",
+      "module": "7_named_entity_recognition.ner_agent",
+      "inputs": ["provider_out"],
+      "outputs": ["agent_out"]
+    },
+    {
+      "id": "dataset",
+      "type": "dataset_loader",
+      "function": "load_conll2003_test_split",
+      "module": "7_named_entity_recognition.data",
+      "outputs": ["dataset_out"]
+    },
+    {
+      "id": "runner",
+      "type": "pipeline",
+      "function": "run_dataset",
+      "module": "7_named_entity_recognition.runner",
+      "inputs": ["dataset_out", "agent_out", "provider_out"],
+      "outputs": ["predictions"]
+    }
+  ],
+  "webhooks": [
+    { "event": "ner_start", "url": "${WEBHOOK_URL}" },
+    { "event": "ner_complete", "url": "${WEBHOOK_URL}" }
+  ]
+}
+
+

@@ -1,0 +1,6 @@
+datasets>=2.19.0
+openai>=1.51.0
+python-dotenv>=1.0.1
+aiohttp>=3.9.5
+pyarrow>=16.1.0
+
