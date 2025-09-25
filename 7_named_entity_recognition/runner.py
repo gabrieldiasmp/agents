@@ -5,6 +5,7 @@ import json
 import os
 import sys
 from typing import List
+import time
 
 from datasets import Dataset
 from agents import Runner, RunConfig
@@ -21,7 +22,7 @@ from model_provider import GEMINI_PROVIDER  # type: ignore
 from ner_agent import build_ner_agent  # type: ignore
 
 
-async def run_dataset(dataset: Dataset, limit: int = 10) -> Dataset:
+async def run_dataset(dataset: Dataset, limit: int = 100) -> Dataset:
     print("[NER] Preparing output directory...")
     os.makedirs(settings.output_dir, exist_ok=True)
     print("[NER] Extracting label mapping...")
@@ -35,6 +36,9 @@ async def run_dataset(dataset: Dataset, limit: int = 10) -> Dataset:
     print(f"[NER] Beginning inference for {n} rows...")
     results: List[List[int]] = []
     for i in range(n):
+        if i in {15, 30, 45, 60, 75, 90}:
+            print(f"Reached {i}, pausing for N seconds...")
+            time.sleep(60)
         #tokens = sanitize_tokens(dataset[i]["tokens"])  # type: ignore[index]
         tokens = dataset[i]["tokens"]
         print(f"[NER] Row {i}: {len(tokens)} tokens")
@@ -47,7 +51,6 @@ async def run_dataset(dataset: Dataset, limit: int = 10) -> Dataset:
         if not validate_predicted_ids(preds, len(tokens), num_labels):
             preds = [0] * len(tokens)
         results.append(preds)
-        print(f"[NER] Row {i}: prediction length {len(preds)}")
     dataset = dataset.select(range(n))
     dataset = dataset.add_column("pred_ner_tags", results)
     print("[NER] Inference complete.")

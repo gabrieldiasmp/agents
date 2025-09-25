@@ -12,7 +12,7 @@ def get_gemini_client() -> AsyncOpenAI:
 
 class GeminiModelProvider(ModelProvider):
     def __init__(self, model_name: str | None = None):
-        self._model_name = model_name or settings.model_name
+        self._model_name = model_name
         self._client = get_gemini_client()
 
     def get_model(self, model_name: str | None) -> Model:
@@ -22,6 +22,6 @@ class GeminiModelProvider(ModelProvider):
         )
 
 
-GEMINI_PROVIDER = GeminiModelProvider()
+GEMINI_PROVIDER = GeminiModelProvider(model_name=settings.model_name)
 
 

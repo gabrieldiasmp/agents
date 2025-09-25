@@ -26,7 +26,7 @@ async def main() -> None:
     print("[NER] Loading CoNLL2003 test split...")
     ds = load_conll2003_test_split()
     print(f"[NER] Dataset loaded with {len(ds)} rows. Limiting to 10.")
-    ds_out: Dataset = await run_dataset(ds, limit=10)
+    ds_out: Dataset = await run_dataset(ds, limit=100)
 
     os.makedirs(settings.output_dir, exist_ok=True)
     parquet_path = os.path.join(settings.output_dir, "predictions.parquet")
