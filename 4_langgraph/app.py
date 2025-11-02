@@ -58,4 +58,4 @@ with gr.Blocks(title="Sidekick", theme=gr.themes.Default(primary_hue="emerald"))
     reset_button.click(reset, [], [message, success_criteria, chatbot, sidekick])
 
 
-ui.launch(inbrowser=True)
+ui.launch(share=True) #inbrowser=True
