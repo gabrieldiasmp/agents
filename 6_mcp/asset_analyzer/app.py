@@ -39,6 +39,6 @@ def create_ui():
 
 if __name__ == "__main__":
     app = create_ui()
-    app.launch(inbrowser=True)
+    app.launch(share=True) #inbrowser=True
 
 

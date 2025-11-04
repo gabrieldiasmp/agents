@@ -43,20 +43,42 @@ class AssetResearcher:
 
         async def search(state: ResearchState) -> ResearchState:
             text = None
+
             if self._search_server:
                 try:
                     tools = await self._search_server.list_tools()
+
+                    # find a search-like tool
                     search_tool_name = None
                     for t in tools:
                         n = getattr(t, "name", "").lower()
                         if "search" in n:
                             search_tool_name = t.name
                             break
+
+                    # call the search tool
                     if search_tool_name:
-                        text = await self._search_server.call_tool(search_tool_name, {"query": state["query"]})
+                        result = await self._search_server.call_tool(search_tool_name, {"query": state["query"]})
+
+                        # FIX: make result JSON-serializable
+                        # (convert CallToolResult or any complex object to a safe structure)
+                        if hasattr(result, "__dict__"):
+                            text = result.__dict__
+                        elif isinstance(result, (list, dict, str, int, float, bool)) or result is None:
+                            text = result
+                        else:
+                            text = str(result)
+
                 except Exception as e:
                     text = f"Search error: {e}"
-            return {**state, "research": json.dumps(text) if text is not None else None}
+
+            # FIX: ensure we can serialize cleanly
+            try:
+                research_str = json.dumps(text)
+            except TypeError:
+                research_str = json.dumps(str(text))
+
+            return {**state, "research": research_str if text is not None else None}
 
         async def reason(state: ResearchState) -> ResearchState:
             # Combine global researcher instructions with persona

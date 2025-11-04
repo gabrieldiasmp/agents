@@ -10,10 +10,8 @@ tvly_api_key = os.getenv("TAVILY_API_KEY")
 def researcher_mcp_server_params(name: str):
     return [
         {
-            "command": "npx",
+            "command": "mcp-remote",
             "args": [
-                "-y",
-                "mcp-remote",
                 f"https://mcp.tavily.com/mcp/?tavilyApiKey={tvly_api_key}",
             ],
         },
