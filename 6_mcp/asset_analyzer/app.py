@@ -21,7 +21,9 @@ def create_ui():
     with gr.Blocks(title="Asset Analyzer") as ui:
         gr.Markdown("## Asset Analyzer - 4 Researchers")
         topic = gr.Textbox(value="AI and Semiconductors", label="Topic")
-        outputs = [gr.Textbox(label=label) for label in ["Growth", "Value", "Quality", "Macro"]]
+        # Build once to derive names for UI labels
+        names = [r.name for r in default_researchers()]
+        outputs = [gr.Textbox(label=label) for label in names]
 
         async def _run(topic_val):
             results = await run_all(topic_val)

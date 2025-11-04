@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from agents.mcp import MCPServerStdio
 from .mcp_params import researcher_mcp_server_params
 from .templates import researcher_instructions
+from .strategies import default_strategies
 
 from langgraph.graph import StateGraph, START, END
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -128,35 +129,9 @@ class AssetResearcher:
 
 
 def default_researchers() -> List[AssetResearcher]:
-    return [
-        AssetResearcher(
-            name="Growth",
-            instructions=(
-                "You are a growth-focused asset researcher. Favor technology and AI beneficiaries. "
-                "Be concise and output only a single JSON object."
-            ),
-        ),
-        AssetResearcher(
-            name="Value",
-            instructions=(
-                "You are a value-focused asset researcher. Seek undervalued assets with margin of safety. "
-                "Be concise and output only a single JSON object."
-            ),
-        ),
-        AssetResearcher(
-            name="Quality",
-            instructions=(
-                "You are a quality-focused asset researcher. Emphasize durable moats and high returns on capital. "
-                "Be concise and output only a single JSON object."
-            ),
-        ),
-        AssetResearcher(
-            name="Macro",
-            instructions=(
-                "You are a macro-focused asset researcher. Consider indices, commodities, and rates. "
-                "Be concise and output only a single JSON object."
-            ),
-        ),
-    ]
+    researchers: List[AssetResearcher] = []
+    for name, instr in default_strategies():
+        researchers.append(AssetResearcher(name=name, instructions=instr))
+    return researchers
 
 
